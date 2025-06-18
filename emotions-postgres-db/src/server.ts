@@ -252,10 +252,11 @@ export class EmotionsMcpServer {
 
   sendLoggingMessage(message: string) : void 
   {
-    this.server.server.sendLoggingMessage({
-      level: "info",
-      data: message,
-    });
+    // Logging is not supported in the MCP SDK
+    //this.server.server.sendLoggingMessage({
+    //  level: "info",
+    //  data: message,
+    //});
   }
 
   async start(): Promise<void> {
