@@ -4,7 +4,6 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { EmotionsDbService } from './database';
 import { z } from 'zod';
 
-// Complete replacement of the EmotionsMcpServer class
 export class EmotionsMcpServer {
   private server: McpServer;
   private db: EmotionsDbService;

@@ -11,8 +11,6 @@ export {
   SourceType
 };
 
-// Example of how to create and start the MCP server
-// This code will only run if this file is executed directly
 if (require.main === module) {
   const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/emotions';
   

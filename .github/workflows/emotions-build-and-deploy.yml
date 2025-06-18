@@ -1,0 +1,59 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'emotions-postgres-db/**'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./emotions-postgres-db
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+        registry-url: 'https://registry.npmjs.org/'
+    
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+    
+    - name: Install dependencies
+      run: pnpm install
+    
+    - name: Run linting
+      run: pnpm lint
+    
+    - name: Build
+      run: pnpm build
+    
+    - name: Run tests
+      run: pnpm test
+    
+    # Publish to npm registry
+    - name: Publish to npm
+      run: pnpm publish --no-git-checks
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+    
+    # Create a GitHub release
+    #- name: Create GitHub Release
+    #  uses: softprops/action-gh-release@v1
+    #  if: startsWith(github.ref, 'refs/tags/')
+    #  with:
+    #    files: |
+    #      ./emotions-postgres-db/dist/**/*
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

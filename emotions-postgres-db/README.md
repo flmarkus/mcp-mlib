@@ -16,6 +16,16 @@ Der Server benötigt eine Verbindung zu einer PostgreSQL Datenbank. Die Verbindu
 
 - `DATABASE_URL`: PostgreSQL Verbindungs-URL (z.B. `postgresql://postgres:password@localhost:5432/emotions`)
 
+## Continuous Integration
+
+Das Projekt verwendet GitHub Actions für kontinuierliche Integration. Bei jedem Push zum `main` Branch wird automatisch:
+
+- Der Code gebaut und getestet
+- Linting durchgeführt
+- Ein GitHub Release erstellt (bei Tag-Erstellung)
+
+Die Workflow-Datei befindet sich unter `.github/workflows/build-and-deploy.yml`.
+
 ## Verwendung
 
 ### Server starten
