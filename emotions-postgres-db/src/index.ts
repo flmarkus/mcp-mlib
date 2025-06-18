@@ -26,9 +26,6 @@ if (require.main === module) {
   const server = new EmotionsMcpServer(connectionString);
   
   server.start()
-    .then(() => {
-      server.sendLoggingMessage("Server started successfully");
-    })
     .catch(err => {
       console.error('Failed to start server:', err);
       process.exit(1);
@@ -36,7 +33,6 @@ if (require.main === module) {
 
   // Handle graceful shutdown
   const shutdown = async () => {
-    server.sendLoggingMessage("Shutting down server...");
     try {
       await server.stop();
       process.exit(0);

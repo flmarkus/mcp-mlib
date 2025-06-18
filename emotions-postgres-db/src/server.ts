@@ -250,14 +250,6 @@ export class EmotionsMcpServer {
     );
   }
 
-  sendLoggingMessage(message: string) : void 
-  {
-    this.server.server.sendLoggingMessage({
-      level: "info",
-      data: message,
-    });
-  }
-
   async start(): Promise<void> {
     try {
       this.transport = new StdioServerTransport();
