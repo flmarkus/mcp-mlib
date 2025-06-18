@@ -250,11 +250,19 @@ export class EmotionsMcpServer {
     );
   }
 
+  sendLoggingMessage(message: string) : void 
+  {
+    this.server.server.sendLoggingMessage({
+      level: "info",
+      data: message,
+    });
+  }
+
   async start(): Promise<void> {
     try {
       this.transport = new StdioServerTransport();
       await this.server.connect(this.transport);
-      console.log('MCP Server started');
+      this.sendLoggingMessage('MCP Server started');
     } catch (error) {
       console.error('Failed to start MCP Server:', error);
       throw error;
@@ -263,11 +271,11 @@ export class EmotionsMcpServer {
 
   async stop(): Promise<void> {
     try {
+      this.sendLoggingMessage('Stopping MCP Server');
       if (this.transport) {
         await this.server.close();
       }
       await this.db.closeConnection();
-      console.log('MCP Server stopped');
     } catch (error) {
       console.error('Error stopping MCP Server:', error);
       throw error;
