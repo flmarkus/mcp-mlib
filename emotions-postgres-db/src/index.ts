@@ -23,12 +23,12 @@ if (require.main === module) {
     connectionString = process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/emotions';
   }
   
-  console.log(`Starting MCP server with connection: ${connectionString.replace(/:[^:]*@/, ':****@')}`);
-  
   const server = new EmotionsMcpServer(connectionString);
   
   server.start()
-    .then(() => console.log('MCP server started successfully'))
+    .then(() => {
+      server.sendLoggingMessage("Server started successfully");
+    })
     .catch(err => {
       console.error('Failed to start server:', err);
       process.exit(1);
@@ -36,10 +36,9 @@ if (require.main === module) {
 
   // Handle graceful shutdown
   const shutdown = async () => {
-    console.log('Shutting down server...');
+    server.sendLoggingMessage("Shutting down server...");
     try {
       await server.stop();
-      console.log('Server stopped');
       process.exit(0);
     } catch (error) {
       console.error('Error during shutdown:', error);
