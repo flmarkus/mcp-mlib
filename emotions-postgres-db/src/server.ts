@@ -105,8 +105,14 @@ export class EmotionsMcpServer {
             content: [{ type: 'text', text: JSON.stringify(result) }]
           };
         } catch (error: any) {
+          if (error.message) {
+            return {
+              content: [{ type: 'text', text: `Error: ${error.message}` }],
+              status: 'error'
+            };
+          }
           return {
-            content: [{ type: 'text', text: `Error: ${error.message}` }],
+            content: [{ type: 'text', text: `Error: ${JSON.stringify(error.message)}` }],
             status: 'error'
           };
         }
