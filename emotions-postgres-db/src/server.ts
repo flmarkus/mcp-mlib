@@ -34,8 +34,14 @@ export class EmotionsMcpServer {
             content: [{ type: 'text', text: JSON.stringify({ exists }) }]
           };
         } catch (error: any) {
+          if (error.message) {
+            return {
+              content: [{ type: 'text', text: `Error: ${error.message}` }],
+              status: 'error'
+            };
+          }
           return {
-            content: [{ type: 'text', text: `Error: ${error.message}` }],
+            content: [{ type: 'text', text: `Error: ${JSON.stringify(error)}` }],
             status: 'error'
           };
         }
@@ -56,8 +62,14 @@ export class EmotionsMcpServer {
             content: [{ type: 'text', text: 'Table created successfully' }]
           };
         } catch (error: any) {
+          if (error.message) {
+            return {
+              content: [{ type: 'text', text: `Error: ${error.message}` }],
+              status: 'error'
+            };
+          }
           return {
-            content: [{ type: 'text', text: `Error: ${error.message}` }],
+            content: [{ type: 'text', text: `Error: ${JSON.stringify(error)}` }],
             status: 'error'
           };
         }
@@ -112,7 +124,7 @@ export class EmotionsMcpServer {
             };
           }
           return {
-            content: [{ type: 'text', text: `Error: ${JSON.stringify(error.message)}` }],
+            content: [{ type: 'text', text: `Error: ${JSON.stringify(error)}` }],
             status: 'error'
           };
         }
@@ -157,8 +169,14 @@ export class EmotionsMcpServer {
             };
           }
         } catch (error: any) {
+          if (error.message) {
+            return {
+              content: [{ type: 'text', text: `Error: ${error.message}` }],
+              status: 'error'
+            };
+          }
           return {
-            content: [{ type: 'text', text: `Error: ${error.message}` }],
+            content: [{ type: 'text', text: `Error: ${JSON.stringify(error)}` }],
             status: 'error'
           };
         }
@@ -201,8 +219,14 @@ export class EmotionsMcpServer {
             content: [{ type: 'text', text: JSON.stringify(emotions) }]
           };
         } catch (error: any) {
+          if (error.message) {
+            return {
+              content: [{ type: 'text', text: `Error: ${error.message}` }],
+              status: 'error'
+            };
+          }
           return {
-            content: [{ type: 'text', text: `Error: ${error.message}` }],
+            content: [{ type: 'text', text: `Error: ${JSON.stringify(error)}` }],
             status: 'error'
           };
         }
@@ -247,8 +271,14 @@ export class EmotionsMcpServer {
             };
           }
         } catch (error: any) {
+          if (error.message) {
+            return {
+              content: [{ type: 'text', text: `Error: ${error.message}` }],
+              status: 'error'
+            };
+          }
           return {
-            content: [{ type: 'text', text: `Error: ${error.message}` }],
+            content: [{ type: 'text', text: `Error: ${JSON.stringify(error)}` }],
             status: 'error'
           };
         }
