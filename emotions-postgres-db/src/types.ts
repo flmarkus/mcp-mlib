@@ -1,7 +1,6 @@
 export type SourceType = 'Eigene Emotion' | 'Übernommene Emotion' | 'Geerbte Emotion';
 
 export interface Emotion {
-  nummer?: number; // Optional: wird automatisch generiert wenn nicht angegeben
   emotion: string;
   datum?: Date;
   alter?: number;
@@ -15,6 +14,7 @@ export interface Emotion {
 export interface EmotionRecord extends Emotion {
   id: number;
   userContext: string;
+  nummer: number;
 }
 
 export interface EmotionFilter {

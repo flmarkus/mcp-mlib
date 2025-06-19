@@ -66,7 +66,14 @@ const emotion = {
 };
 
 const newEmotion = await client.insertEmotion(emotion);
-console.log(`Neue Emotion erstellt: ${newEmotion.id}`);
+console.log(`Neue Emotion erstellt: ID ${newEmotion.id}, Nummer ${newEmotion.nummer}`);
+
+// Emotion aktualisieren
+const updatedEmotion = await client.updateEmotion(newEmotion.id, {
+  emotion: 'Große Freude',
+  auswirkungen: 'Gesteigertes Wohlbefinden'
+});
+console.log(`Emotion aktualisiert: ${updatedEmotion.emotion}`);
 
 // Emotionen abfragen
 const emotions = await client.getEmotions();
@@ -86,27 +93,43 @@ await client.deleteEmotion(newEmotion.id);
 
 ### Emotion
 
+#### Eingabefelder
+
 | Feld        | Typ      | Beschreibung                                                           |
-|-------------|----------|-----------------------------------------------------------------------|
-| id          | number   | Eindeutige ID (automatisch generiert)                                 |
-| userContext | string   | Benutzerkontext (Tenant)                                              |
-| nummer      | number   | Fortlaufende Nummer beginnend bei 1 (pro userContext)                 |
-| emotion     | string   | Name der Emotion (Erforderlich)                                       |
-| datum       | Date     | Datum an dem die Emotion gelöst wurde (Optional)                      |
-| alter       | number   | Alter in dem die Emotion im Körper eingeschlossen wurde (Optional)    |
+|-------------|----------|------------------------------------------------------------------------|
+| emotion     | string   | Name der Emotion (Erforderlich)                                        |
+| datum       | Date     | Datum an dem die Emotion gelöst wurde (Optional)                       |
+| alter       | number   | Alter in dem die Emotion im Körper eingeschlossen wurde (Optional)     |
 | quellenart  | string   | Art der Quelle: "Eigene Emotion", "Übernommene Emotion", "Geerbte Emotion" (Optional) |
 | quelle      | string   | Quelle der Emotion, wenn nicht eigene (Optional, aber erforderlich bei übernommenen/geerbten Emotionen) |
-| koerperteil | string   | Körperteil in dem die Emotion eingeschlossen war (Optional)           |
-| auswirkungen| string   | Körperliche oder emotionale Auswirkungen (Optional)                   |
-| bemerkungen | string   | Zusätzliche Informationen (Optional)                                  |
+| koerperteil | string   | Körperteil in dem die Emotion eingeschlossen war (Optional)            |
+| auswirkungen| string   | Körperliche oder emotionale Auswirkungen (Optional)                    |
+| bemerkungen | string   | Zusätzliche Informationen (Optional)                                   |
+
+#### Gespeicherte Felder (EmotionRecord)
+
+| Feld        | Typ      | Beschreibung                                                           |
+|-------------|----------|------------------------------------------------------------------------|
+| id          | number   | Eindeutige ID (automatisch generiert)                                  |
+| userContext | string   | Benutzerkontext (Tenant)                                               |
+| nummer      | number   | Fortlaufende Nummer beginnend bei 1 (pro userContext, automatisch generiert) |
+| emotion     | string   | Name der Emotion                                                       |
+| datum       | Date     | Datum an dem die Emotion gelöst wurde                                  |
+| alter       | number   | Alter in dem die Emotion im Körper eingeschlossen wurde                |
+| quellenart  | string   | Art der Quelle: "Eigene Emotion", "Übernommene Emotion", "Geerbte Emotion" |
+| quelle      | string   | Quelle der Emotion, wenn nicht eigene                                  |
+| koerperteil | string   | Körperteil in dem die Emotion eingeschlossen war                       |
+| auswirkungen| string   | Körperliche oder emotionale Auswirkungen                               |
+| bemerkungen | string   | Zusätzliche Informationen                                              |
 
 ## API-Methoden
 
 | Methode         | Parameter                       | Beschreibung                            |
-|-----------------|---------------------------------|----------------------------------------|
+|-----------------|---------------------------------|-----------------------------------------|
 | tableExists     | userContext: string             | Prüft ob die Tabelle existiert          |
 | createTable     | -                               | Erstellt die Tabelle                    |
 | insertEmotion   | userContext: string, emotion: Emotion | Fügt eine neue Emotion hinzu      |
+| updateEmotion   | userContext: string, emotionId: number, emotion: Emotion | Aktualisiert eine bestehende Emotion |
 | deleteEmotion   | userContext: string, emotionId: number | Löscht eine Emotion              |
 | getEmotions     | userContext: string, filter?: EmotionFilter | Findet Emotionen mit Filter |
 | getEmotionById  | userContext: string, emotionId: number | Findet eine Emotion nach ID      |

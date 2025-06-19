@@ -71,25 +71,12 @@ export class EmotionsDbService {
       // Start a transaction
       await client.query('BEGIN');
 
-      // Get the next nummer value for this user context if not provided
-      let nummer = emotion.nummer;
-      if (!nummer) {
-        const nextNummerResult = await client.query(
-          `SELECT COALESCE(MAX(nummer), 0) + 1 AS next_nummer FROM ${this.tableName} WHERE user_context = $1`,
-          [userContext]
-        );
-        nummer = nextNummerResult.rows[0].next_nummer;
-      } else {
-        // Check if this nummer already exists for this user
-        const existingCheck = await client.query(
-          `SELECT 1 FROM ${this.tableName} WHERE user_context = $1 AND nummer = $2`,
-          [userContext, nummer]
-        );
-        
-        if (existingCheck.rows.length > 0) {
-          throw new Error(`Eine Emotion mit der Nummer ${nummer} existiert bereits für diesen Benutzer`);
-        }
-      }
+      // Always generate the next nummer value for this user context
+      const nextNummerResult = await client.query(
+        `SELECT COALESCE(MAX(nummer), 0) + 1 AS next_nummer FROM ${this.tableName} WHERE user_context = $1`,
+        [userContext]
+      );
+      const nummer = nextNummerResult.rows[0].next_nummer;
 
       const result = await client.query(
         `INSERT INTO ${this.tableName} (
@@ -261,6 +248,74 @@ export class EmotionsDbService {
       );
       
       return result.rows as EmotionRecord[];
+    } finally {
+      client.release();
+    }
+  }
+  
+  async updateEmotion(userContext: string, emotionId: number, emotion: Emotion): Promise<EmotionRecord | null> {
+    // Validate required fields
+    if (!emotion.emotion) {
+      throw new Error('Das Feld "emotion" ist erforderlich');
+    }
+
+    // Validate quelle field when necessary
+    if ((emotion.quellenart === 'Übernommene Emotion' || emotion.quellenart === 'Geerbte Emotion') && !emotion.quelle) {
+      throw new Error('Das Feld "quelle" ist erforderlich für übernommene oder geerbte Emotionen');
+    }
+
+    const client = await this.pool.connect();
+    try {
+      // Start a transaction
+      await client.query('BEGIN');
+
+      // Check if the emotion exists for this user
+      const checkResult = await client.query(
+        `SELECT id, nummer FROM ${this.tableName} WHERE id = $1 AND user_context = $2`,
+        [emotionId, userContext]
+      );
+
+      if (checkResult.rows.length === 0) {
+        throw new Error(`Emotion mit der ID ${emotionId} wurde nicht gefunden`);
+      }
+
+      // Use the existing nummer - prevent nummer from being changed
+      const existingNummer = checkResult.rows[0].nummer;
+
+      const result = await client.query(
+        `UPDATE ${this.tableName} SET
+          emotion = $1,
+          datum = $2,
+          alter = $3,
+          quellenart = $4,
+          quelle = $5,
+          koerperteil = $6,
+          auswirkungen = $7,
+          bemerkungen = $8
+        WHERE id = $9 AND user_context = $10
+        RETURNING id, user_context AS "userContext", nummer, emotion, datum, alter, quellenart, quelle, koerperteil, auswirkungen, bemerkungen`,
+        [
+          emotion.emotion,
+          emotion.datum || null,
+          emotion.alter || null,
+          emotion.quellenart || null,
+          emotion.quelle || null,
+          emotion.koerperteil || null,
+          emotion.auswirkungen || null,
+          emotion.bemerkungen || null,
+          emotionId,
+          userContext
+        ]
+      );
+
+      // Commit the transaction
+      await client.query('COMMIT');
+      
+      return result.rows.length > 0 ? result.rows[0] as EmotionRecord : null;
+    } catch (error) {
+      // Rollback in case of error
+      await client.query('ROLLBACK');
+      throw error;
     } finally {
       client.release();
     }
