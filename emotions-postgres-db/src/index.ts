@@ -18,7 +18,20 @@ if (require.main === module) {
   let connectionString: string;
   
   if (process.argv.length > 2) {
-    connectionString = process.argv[2];
+    const arg = process.argv[2];
+    if (arg.startsWith('env:')) {
+      // Extract the environment variable name after 'env:'
+      const envVarName = arg.substring(4);
+      const envValue = process.env[envVarName];
+      if (!envValue) {
+        console.error(`Error: Environment variable "${envVarName}" not found`);
+        process.exit(1);
+      }
+      connectionString = envValue;
+    } else {
+      // Direct connection string
+      connectionString = arg;
+    }
   } else {
     connectionString = process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/emotions';
   }
