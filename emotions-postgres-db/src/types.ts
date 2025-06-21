@@ -1,4 +1,4 @@
-export type SourceType = 'Eigene Emotion' | 'Übernommene Emotion' | 'Geerbte Emotion';
+export type SourceType = 'Eigene Emotion' | 'Herzmauer' | 'Übernommene Emotion' | 'Geerbte Emotion';
 
 export interface Emotion {
   emotion: string;

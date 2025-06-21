@@ -87,7 +87,7 @@ export class EmotionsMcpServer {
             emotion: z.string(),
             datum: z.date().optional(),
             alter: z.number().optional(),
-            quellenart: z.enum(['Eigene Emotion', 'Übernommene Emotion', 'Geerbte Emotion']).optional(),
+            quellenart: z.enum(['Eigene Emotion', 'Herzmauer', 'Übernommene Emotion', 'Geerbte Emotion']).optional(),
             quelle: z.string().optional(),
             koerperteil: z.string().optional(),
             auswirkungen: z.string().optional(),
@@ -130,6 +130,75 @@ export class EmotionsMcpServer {
       }
     );
 
+    // Method to update an emotion
+    this.server.registerTool(
+      'updateEmotion',
+      {
+        description: 'Update an existing emotion by ID',
+        inputSchema: {
+          userContext: z.string().describe('User context for the emotion'),
+          emotionId: z.number().describe('ID of the emotion to update'),
+          emotion: z.object({
+            emotion: z.string(),
+            datum: z.date().optional(),
+            alter: z.number().optional(),
+            quellenart: z.enum(['Eigene Emotion', 'Herzmauer', 'Übernommene Emotion', 'Geerbte Emotion']).optional(),
+            quelle: z.string().optional(),
+            koerperteil: z.string().optional(),
+            auswirkungen: z.string().optional(),
+            bemerkungen: z.string().optional()
+          }).describe('Updated emotion data')
+        }
+      },
+      async ({ userContext, emotionId, emotion }) => {
+        try {
+          if (!userContext) {
+            return {
+              content: [{ type: 'text', text: 'User context is required' }],
+              status: 'error'
+            };
+          }
+
+          if (!emotionId) {
+            return {
+              content: [{ type: 'text', text: 'Emotion ID is required' }],
+              status: 'error'
+            };
+          }
+
+          if (!emotion) {
+            return {
+              content: [{ type: 'text', text: 'Updated emotion data is required' }],
+              status: 'error'
+            };
+          }
+
+          const updatedEmotion = await this.db.updateEmotion(userContext, emotionId, emotion);
+          if (updatedEmotion) {
+            return {
+              content: [{ type: 'text', text: JSON.stringify(updatedEmotion) }]
+            };
+          } else {
+            return {
+              content: [{ type: 'text', text: 'Emotion not found or update failed' }],
+              status: 'error'
+            };
+          }
+        } catch (error: any) {
+          if (error.message) {
+            return {
+              content: [{ type: 'text', text: `Error: ${error.message}` }],
+              status: 'error'
+            };
+          }
+          return {
+            content: [{ type: 'text', text: `Error: ${JSON.stringify(error)}` }],
+            status: 'error'
+          };
+        }
+      }
+    );
+    
     // Method to delete an emotion
     this.server.registerTool(
       'deleteEmotion',
@@ -196,7 +265,7 @@ export class EmotionsMcpServer {
             datumBis: z.date().optional(),
             alterVon: z.number().optional(),
             alterBis: z.number().optional(),
-            quellenart: z.enum(['Eigene Emotion', 'Übernommene Emotion', 'Geerbte Emotion']).optional(),
+            quellenart: z.enum(['Eigene Emotion', 'Herzmauer', 'Übernommene Emotion', 'Geerbte Emotion']).optional(),
             quelle: z.string().optional(),
             koerperteil: z.string().optional(),
             auswirkungen: z.string().optional(),
@@ -266,74 +335,6 @@ export class EmotionsMcpServer {
           } else {
             return {
               content: [{ type: 'text', text: 'Emotion not found' }],
-              status: 'error'
-            };
-          }
-        } catch (error: any) {
-          if (error.message) {
-            return {
-              content: [{ type: 'text', text: `Error: ${error.message}` }],
-              status: 'error'
-            };
-          }
-          return {
-            content: [{ type: 'text', text: `Error: ${JSON.stringify(error)}` }],
-            status: 'error'
-          };
-        }
-      }
-    );
-
-    // Method to update an emotion
-    this.server.registerTool(      'updateEmotion',
-      {
-        description: 'Update an existing emotion by ID',
-        inputSchema: {
-          userContext: z.string().describe('User context for the emotion'),
-          emotionId: z.number().describe('ID of the emotion to update'),
-          emotion: z.object({
-            emotion: z.string(),
-            datum: z.date().optional(),
-            alter: z.number().optional(),
-            quellenart: z.enum(['Eigene Emotion', 'Übernommene Emotion', 'Geerbte Emotion']).optional(),
-            quelle: z.string().optional(),
-            koerperteil: z.string().optional(),
-            auswirkungen: z.string().optional(),
-            bemerkungen: z.string().optional()
-          }).describe('Updated emotion data')
-        }
-      },
-      async ({ userContext, emotionId, emotion }) => {
-        try {
-          if (!userContext) {
-            return {
-              content: [{ type: 'text', text: 'User context is required' }],
-              status: 'error'
-            };
-          }
-
-          if (!emotionId) {
-            return {
-              content: [{ type: 'text', text: 'Emotion ID is required' }],
-              status: 'error'
-            };
-          }
-
-          if (!emotion) {
-            return {
-              content: [{ type: 'text', text: 'Updated emotion data is required' }],
-              status: 'error'
-            };
-          }
-
-          const updatedEmotion = await this.db.updateEmotion(userContext, emotionId, emotion);
-          if (updatedEmotion) {
-            return {
-              content: [{ type: 'text', text: JSON.stringify(updatedEmotion) }]
-            };
-          } else {
-            return {
-              content: [{ type: 'text', text: 'Emotion not found or update failed' }],
               status: 'error'
             };
           }

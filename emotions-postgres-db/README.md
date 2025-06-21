@@ -100,7 +100,7 @@ await client.deleteEmotion(newEmotion.id);
 | emotion     | string   | Name der Emotion (Erforderlich)                                        |
 | datum       | Date     | Datum an dem die Emotion gelöst wurde (Optional)                       |
 | alter       | number   | Alter in dem die Emotion im Körper eingeschlossen wurde (Optional)     |
-| quellenart  | string   | Art der Quelle: "Eigene Emotion", "Übernommene Emotion", "Geerbte Emotion" (Optional) |
+| quellenart  | string   | Art der Quelle: "Eigene Emotion", "Herzmauer", "Übernommene Emotion", "Geerbte Emotion" (Optional) |
 | quelle      | string   | Quelle der Emotion, wenn nicht eigene (Optional, aber erforderlich bei übernommenen/geerbten Emotionen) |
 | koerperteil | string   | Körperteil in dem die Emotion eingeschlossen war (Optional)            |
 | auswirkungen| string   | Körperliche oder emotionale Auswirkungen (Optional)                    |
@@ -116,7 +116,7 @@ await client.deleteEmotion(newEmotion.id);
 | emotion     | string   | Name der Emotion                                                       |
 | datum       | Date     | Datum an dem die Emotion gelöst wurde                                  |
 | alter       | number   | Alter in dem die Emotion im Körper eingeschlossen wurde                |
-| quellenart  | string   | Art der Quelle: "Eigene Emotion", "Übernommene Emotion", "Geerbte Emotion" |
+| quellenart  | string   | Art der Quelle: "Eigene Emotion", "Herzmauer", "Übernommene Emotion", "Geerbte Emotion" |
 | quelle      | string   | Quelle der Emotion, wenn nicht eigene                                  |
 | koerperteil | string   | Körperteil in dem die Emotion eingeschlossen war                       |
 | auswirkungen| string   | Körperliche oder emotionale Auswirkungen                               |
