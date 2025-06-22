@@ -85,9 +85,9 @@ export class EmotionsMcpServer {
           userContext: z.string().describe('User context for the emotion'),
           emotion: z.object({
             emotion: z.string(),
-            datum: z.date().optional(),
+            datum: z.string().pipe(z.coerce.date()),
             alter: z.number().optional(),
-            quellenart: z.enum(['Eigene Emotion', 'Herzmauer', 'Übernommene Emotion', 'Geerbte Emotion']).optional(),
+            quellenart: z.enum(['Eigene Emotion', 'Herzmauer', 'Übernommene Emotion', 'Geerbte Emotion']),
             quelle: z.string().optional(),
             koerperteil: z.string().optional(),
             auswirkungen: z.string().optional(),
@@ -140,9 +140,9 @@ export class EmotionsMcpServer {
           emotionId: z.number().describe('ID of the emotion to update'),
           emotion: z.object({
             emotion: z.string(),
-            datum: z.date().optional(),
+            datum: z.string().pipe(z.coerce.date()),
             alter: z.number().optional(),
-            quellenart: z.enum(['Eigene Emotion', 'Herzmauer', 'Übernommene Emotion', 'Geerbte Emotion']).optional(),
+            quellenart: z.enum(['Eigene Emotion', 'Herzmauer', 'Übernommene Emotion', 'Geerbte Emotion']),
             quelle: z.string().optional(),
             koerperteil: z.string().optional(),
             auswirkungen: z.string().optional(),
