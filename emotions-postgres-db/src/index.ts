@@ -19,7 +19,16 @@ if (require.main === module) {
   
   if (process.argv.length > 2) {
     const arg = process.argv[2];
-    if (arg.startsWith('env:')) {
+    if (arg.startsWith('file:')) {
+      // Extract the file path after 'file:'
+      const filePath = arg.substring(5);
+      try {
+        connectionString = require('fs').readFileSync(filePath, 'utf8').trim();
+      } catch (error) {
+        console.error(`Error reading connection string from file "${filePath}":`, error);
+        process.exit(1);
+      }
+    } else if (arg.startsWith('env:')) {
       // Extract the environment variable name after 'env:'
       const envVarName = arg.substring(4);
       const envValue = process.env[envVarName];
