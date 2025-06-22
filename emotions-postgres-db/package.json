@@ -1,6 +1,6 @@
 {
   "name": "emotions-mcp-server",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "MCP Server for accessing PostgreSQL emotions database",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

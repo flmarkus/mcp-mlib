@@ -100,9 +100,9 @@ await client.deleteEmotion(newEmotion.id);
 | emotion     | string   | Name der Emotion (Erforderlich)                                        |
 | datum       | Date     | Datum an dem die Emotion gelöst wurde (Erforderlich)                   |
 | alter       | number   | Alter in dem die Emotion im Körper eingeschlossen wurde (Optional)     |
-| quellenart  | string   | Art der Quelle: "Eigene Emotion", "Herzmauer", "Übernommene Emotion", "Geerbte Emotion" (Erforderlich) |
-| quelle      | string   | Quelle der Emotion, wenn nicht eigene (Optional, aber erforderlich bei übernommenen/geerbten Emotionen) |
-| koerperteil | string   | Körperteil in dem die Emotion eingeschlossen war (Optional)            |
+| quellenart  | string   | Art der Quelle: "Eigene Emotion", "Übernommene Emotion", "Geerbte Emotion" (Erforderlich) |
+| quelle      | string   | Quelle der Emotion (Leer bei eigenen Emotionen, aber erforderlich bei übernommenen/geerbten Emotionen) |
+| koerperteil | string   | "Herzmauer" oder Name des Organs in dem die Emotion eingeschlossen war (Optional)            |
 | auswirkungen| string   | Körperliche oder emotionale Auswirkungen (Optional)                    |
 | bemerkungen | string   | Zusätzliche Informationen (Optional)                                   |
 
@@ -116,9 +116,9 @@ await client.deleteEmotion(newEmotion.id);
 | emotion     | string   | Name der Emotion                                                       |
 | datum       | Date     | Datum an dem die Emotion gelöst wurde                                  |
 | alter       | number   | Alter in dem die Emotion im Körper eingeschlossen wurde                |
-| quellenart  | string   | Art der Quelle: "Eigene Emotion", "Herzmauer", "Übernommene Emotion", "Geerbte Emotion" |
+| quellenart  | string   | Art der Quelle: "Eigene Emotion", "Übernommene Emotion", "Geerbte Emotion" |
 | quelle      | string   | Quelle der Emotion, wenn nicht eigene                                  |
-| koerperteil | string   | Körperteil in dem die Emotion eingeschlossen war                       |
+| koerperteil | string   | "Herzmauer" oder Name des Organs in dem die Emotion eingeschlossen war                       |
 | auswirkungen| string   | Körperliche oder emotionale Auswirkungen                               |
 | bemerkungen | string   | Zusätzliche Informationen                                              |
 

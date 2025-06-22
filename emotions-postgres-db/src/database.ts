@@ -42,7 +42,7 @@ export class EmotionsDbService {
           emotion TEXT NOT NULL,
           datum DATE,
           alter INTEGER,
-          quellenart TEXT CHECK (quellenart IN ('Eigene Emotion', 'Herzmauer', 'Übernommene Emotion', 'Geerbte Emotion')),
+          quellenart TEXT CHECK (quellenart IN ('Eigene Emotion', 'Übernommene Emotion', 'Geerbte Emotion')),
           quelle TEXT,
           koerperteil TEXT,
           auswirkungen TEXT,
