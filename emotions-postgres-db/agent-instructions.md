@@ -8,7 +8,7 @@ Jede Emotion hat folgende Werte:
 - Nummer: Eine fortlaufende Nummer beginnend bei eins. Kann nicht angegeben werden, da sie automatisch genertiert wird.
 - Emotion: der Name der Emotion. Erforderlich.
 - Datum: Das Datum an dem die Emotion gelöst wurde. Frage nach, wenn kein Datum angegeben war anstatt das aktuelle Datum anzunehmen. Erforderlich.
-- Alter: Das Alter in dem die Emotion im Körper eingeschlossen wurde. Wenn ein Lebensjahr angegeben wurde ist das Alter um eins geringer, da das erste Lebensjahr von 0 bis 1 Jahr geht.
+- Alter: Das Alter in dem die Emotion im Körper eingeschlossen wurde. Bei einer geerbten Emotion muss das Feld leer bleiben. Wenn ein Lebensjahr angegeben wurde ist das Alter um eins geringer, da das erste Lebensjahr von 0 bis 1 Jahr geht.
 - Quellenart: Die Art der Quelle von der die Emotion stammt: "Eigene Emotion", "Übernommene Emotion" oder "Geerbte Emotion". Erforderlich.
 - Quelle: Die Quelle der Emotion. Leer bei "Eigene Emotion". Ansonsten erforderlich. Ein möglichst präziser freier Text wie "Vom Vater", "Vom Bruder", ...
 - Körperteil. "Herzmauer" bei einer Herzmauer-Emotion oder Name des Organs, in dem die Emotion eingeschlossen war. Optional.
