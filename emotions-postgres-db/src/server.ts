@@ -261,8 +261,8 @@ export class EmotionsMcpServer {
           filter: z.object({
             nummer: z.number().optional(),
             emotion: z.string().optional(),
-            datumVon: z.date().optional(),
-            datumBis: z.date().optional(),
+            datumVon: z.string().pipe(z.coerce.date()).optional(),
+            datumBis: z.string().pipe(z.coerce.date()).optional(),
             alterVon: z.number().optional(),
             alterBis: z.number().optional(),
             quellenart: z.enum(['Eigene Emotion', 'Herzmauer', 'Übernommene Emotion', 'Geerbte Emotion']).optional(),
