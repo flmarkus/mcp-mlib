@@ -110,12 +110,12 @@ export class EmotionsDbService {
     }
   }
 
-  async deleteEmotion(userContext: string, emotionId: number): Promise<boolean> {
+  async deleteEmotion(userContext: string, emotionNumber: number): Promise<boolean> {
     const client = await this.pool.connect();
     try {
       const result = await client.query(
-        `DELETE FROM ${this.tableName} WHERE id = $1 AND user_context = $2 RETURNING id`,
-        [emotionId, userContext]
+        `DELETE FROM ${this.tableName} WHERE nummer = $1 AND user_context = $2 RETURNING id`,
+        [emotionNumber, userContext]
       );
       
       return (result.rowCount ?? 0) > 0;
@@ -124,7 +124,7 @@ export class EmotionsDbService {
     }
   }
 
-  async getEmotionById(userContext: string, emotionId: number): Promise<EmotionRecord | null> {
+  async getEmotionByNumber(userContext: string, emotionNumber: number): Promise<EmotionRecord | null> {
     const client = await this.pool.connect();
     try {
       const result = await client.query(
@@ -141,8 +141,8 @@ export class EmotionsDbService {
           auswirkungen, 
           bemerkungen
         FROM ${this.tableName} 
-        WHERE id = $1 AND user_context = $2`,
-        [emotionId, userContext]
+        WHERE nummer = $1 AND user_context = $2`,
+        [emotionNumber, userContext]
       );
       
       return result.rows.length > 0 ? result.rows[0] as EmotionRecord : null;
@@ -253,7 +253,7 @@ export class EmotionsDbService {
     }
   }
   
-  async updateEmotion(userContext: string, emotionId: number, emotion: Emotion): Promise<EmotionRecord | null> {
+  async updateEmotion(userContext: string, emotionNumber: number, emotion: Emotion): Promise<EmotionRecord | null> {
     // Validate required fields
     if (!emotion.emotion) {
       throw new Error('Das Feld "emotion" ist erforderlich');
@@ -271,12 +271,12 @@ export class EmotionsDbService {
 
       // Check if the emotion exists for this user
       const checkResult = await client.query(
-        `SELECT id, nummer FROM ${this.tableName} WHERE id = $1 AND user_context = $2`,
-        [emotionId, userContext]
+        `SELECT id, nummer FROM ${this.tableName} WHERE nummer = $1 AND user_context = $2`,
+        [emotionNumber, userContext]
       );
 
       if (checkResult.rows.length === 0) {
-        throw new Error(`Emotion mit der ID ${emotionId} wurde nicht gefunden`);
+        throw new Error(`Emotion mit der Nummer ${emotionNumber} wurde nicht gefunden`);
       }
 
       // Use the existing nummer - prevent nummer from being changed
@@ -292,7 +292,7 @@ export class EmotionsDbService {
           koerperteil = $6,
           auswirkungen = $7,
           bemerkungen = $8
-        WHERE id = $9 AND user_context = $10
+        WHERE nummer = $9 AND user_context = $10
         RETURNING id, user_context AS "userContext", nummer, emotion, datum, alter, quellenart, quelle, koerperteil, auswirkungen, bemerkungen`,
         [
           emotion.emotion,
@@ -303,7 +303,7 @@ export class EmotionsDbService {
           emotion.koerperteil || null,
           emotion.auswirkungen || null,
           emotion.bemerkungen || null,
-          emotionId,
+          emotionNumber,
           userContext
         ]
       );
@@ -316,6 +316,35 @@ export class EmotionsDbService {
       // Rollback in case of error
       await client.query('ROLLBACK');
       throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async getRecentEmotions(userContext: string, limit: number): Promise<EmotionRecord[]> {
+    const client = await this.pool.connect();
+    try {
+      const result = await client.query(
+        `SELECT 
+          id, 
+          user_context AS "userContext", 
+          nummer, 
+          emotion, 
+          datum, 
+          alter, 
+          quellenart, 
+          quelle, 
+          koerperteil, 
+          auswirkungen, 
+          bemerkungen
+        FROM ${this.tableName} 
+        WHERE user_context = $1
+        ORDER BY nummer DESC
+        LIMIT $2`,
+        [userContext, limit]
+      );
+      
+      return result.rows as EmotionRecord[];
     } finally {
       client.release();
     }

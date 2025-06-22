@@ -137,7 +137,7 @@ export class EmotionsMcpServer {
         description: 'Update an existing emotion by ID',
         inputSchema: {
           userContext: z.string().describe('User context for the emotion'),
-          emotionId: z.number().describe('ID of the emotion to update'),
+          emotionNumber: z.number().describe('Number of the emotion to update'),
           emotion: z.object({
             emotion: z.string(),
             datum: z.string().pipe(z.coerce.date()),
@@ -150,7 +150,7 @@ export class EmotionsMcpServer {
           }).describe('Updated emotion data')
         }
       },
-      async ({ userContext, emotionId, emotion }) => {
+      async ({ userContext, emotionNumber, emotion }) => {
         try {
           if (!userContext) {
             return {
@@ -159,7 +159,7 @@ export class EmotionsMcpServer {
             };
           }
 
-          if (!emotionId) {
+          if (!emotionNumber) {
             return {
               content: [{ type: 'text', text: 'Emotion ID is required' }],
               status: 'error'
@@ -173,7 +173,7 @@ export class EmotionsMcpServer {
             };
           }
 
-          const updatedEmotion = await this.db.updateEmotion(userContext, emotionId, emotion);
+          const updatedEmotion = await this.db.updateEmotion(userContext, emotionNumber, emotion);
           if (updatedEmotion) {
             return {
               content: [{ type: 'text', text: JSON.stringify(updatedEmotion) }]
@@ -206,10 +206,10 @@ export class EmotionsMcpServer {
         description: 'Delete an emotion by ID',
         inputSchema: {
           userContext: z.string().describe('User context for the emotion'),
-          emotionId: z.number().describe('ID of the emotion to delete')
+          emotionNumber: z.number().describe('Number of the emotion to delete')
         }
       },
-      async ({ userContext, emotionId }) => {
+      async ({ userContext, emotionNumber }) => {
         try {
           if (!userContext) {
             return {
@@ -218,14 +218,14 @@ export class EmotionsMcpServer {
             };
           }
 
-          if (!emotionId) {
+          if (!emotionNumber) {
             return {
-              content: [{ type: 'text', text: 'Emotion ID is required' }],
+              content: [{ type: 'text', text: 'Emotion Number is required' }],
               status: 'error'
             };
           }
 
-          const result = await this.db.deleteEmotion(userContext, emotionId);
+          const result = await this.db.deleteEmotion(userContext, emotionNumber);
           if (result) {
             return {
               content: [{ type: 'text', text: 'Emotion deleted successfully' }]
@@ -303,15 +303,15 @@ export class EmotionsMcpServer {
 
     // Method to get a specific emotion by ID
     this.server.registerTool(
-      'getEmotionById',
+      'getEmotionByNumber',
       {
-        description: 'Get a specific emotion by ID',
+        description: 'Get a specific emotion by Number',
         inputSchema: {
           userContext: z.string().describe('User context for the emotion'),
-          emotionId: z.number().describe('ID of the emotion to retrieve')
+          emotionNumber: z.number().describe('Number of the emotion to retrieve')
         }
       },
-      async ({ userContext, emotionId }) => {
+      async ({ userContext, emotionNumber }) => {
         try {
           if (!userContext) {
             return {
@@ -320,14 +320,14 @@ export class EmotionsMcpServer {
             };
           }
 
-          if (!emotionId) {
+          if (!emotionNumber) {
             return {
-              content: [{ type: 'text', text: 'Emotion ID is required' }],
+              content: [{ type: 'text', text: 'Emotion Number is required' }],
               status: 'error'
             };
           }
 
-          const emotion = await this.db.getEmotionById(userContext, emotionId);
+          const emotion = await this.db.getEmotionByNumber(userContext, emotionNumber);
           if (emotion) {
             return {
               content: [{ type: 'text', text: JSON.stringify(emotion) }]
@@ -338,6 +338,44 @@ export class EmotionsMcpServer {
               status: 'error'
             };
           }
+        } catch (error: any) {
+          if (error.message) {
+            return {
+              content: [{ type: 'text', text: `Error: ${error.message}` }],
+              status: 'error'
+            };
+          }
+          return {
+            content: [{ type: 'text', text: `Error: ${JSON.stringify(error)}` }],
+            status: 'error'
+          };
+        }
+      }
+    );
+
+    // Method to get recent emotions
+    this.server.registerTool(
+      'getRecentEmotions',
+      {
+        description: 'Get the most recent emotions for a user',
+        inputSchema: {
+          userContext: z.string().describe('User context for the emotions'),
+          limit: z.number().min(1).default(10).describe('Maximum number of emotions to retrieve')
+        }
+      },
+      async ({ userContext, limit = 10 }) => {
+        try {
+          if (!userContext) {
+            return {
+              content: [{ type: 'text', text: 'User context is required' }],
+              status: 'error'
+            };
+          }
+
+          const emotions = await this.db.getRecentEmotions(userContext, limit);
+          return {
+            content: [{ type: 'text', text: JSON.stringify(emotions) }]
+          };
         } catch (error: any) {
           if (error.message) {
             return {

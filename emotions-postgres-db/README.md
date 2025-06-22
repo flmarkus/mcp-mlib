@@ -85,6 +85,14 @@ const filteredEmotions = await client.getEmotions({
   datumVon: new Date('2023-01-01')
 });
 
+// Neueste Emotionen abfragen (Standard: 10)
+const recentEmotions = await client.getRecentEmotions();
+console.log(`Die ${recentEmotions.length} neuesten Emotionen wurden abgerufen`);
+
+// Neueste Emotionen mit Limit abfragen
+const last5Emotions = await client.getRecentEmotions(5);
+console.log(`Die 5 neuesten Emotionen wurden abgerufen`);
+
 // Emotion löschen
 await client.deleteEmotion(newEmotion.id);
 ```
@@ -129,10 +137,11 @@ await client.deleteEmotion(newEmotion.id);
 | tableExists     | userContext: string             | Prüft ob die Tabelle existiert          |
 | createTable     | -                               | Erstellt die Tabelle                    |
 | insertEmotion   | userContext: string, emotion: Emotion | Fügt eine neue Emotion hinzu      |
-| updateEmotion   | userContext: string, emotionId: number, emotion: Emotion | Aktualisiert eine bestehende Emotion |
-| deleteEmotion   | userContext: string, emotionId: number | Löscht eine Emotion              |
+| updateEmotion   | userContext: string, emotionNumber: number, emotion: Emotion | Aktualisiert eine bestehende Emotion |
+| deleteEmotion   | userContext: string, emotionNumber: number | Löscht eine Emotion              |
 | getEmotions     | userContext: string, filter?: EmotionFilter | Findet Emotionen mit Filter |
-| getEmotionById  | userContext: string, emotionId: number | Findet eine Emotion nach ID      |
+| getEmotionByNumber | userContext: string, emotionNumber: number | Findet eine Emotion nach Nummer |
+| getRecentEmotions | userContext: string, limit?: number | Holt die neuesten Emotionen (Standard: 10) |
 
 ## Lizenz
 
